@@ -5,7 +5,9 @@ let app = express();
 const http = require("http");
 const server = http.createServer(app);
 const port = process.env.PORT || 4000;
-
+/**
+ * me endpoint
+ */
 app.get("/api/v1/me", (req, res, next) => {
   const { slack_name, track } = req.query;
   if (!slack_name && !track)
@@ -16,6 +18,14 @@ app.get("/api/v1/me", (req, res, next) => {
     return res
       .status(422)
       .send({ error: "please provide a valid track", status_code: "400" });
+
+  if (!allowedTimeZones()) {
+    return res
+      .status(400)
+      .json({
+        error: `Current UTC time (${new Date()}) is outside the allowed time range.`,
+      });
+  }
   const currentDay = getCurrentDay();
   return res.status(200).json({
     slack_name: slack_name,
@@ -27,6 +37,10 @@ app.get("/api/v1/me", (req, res, next) => {
     status_code: "200",
   });
 });
+/**
+ * Get's current day
+ * @returns {String}
+ */
 const getCurrentDay = () => {
   const currentDate = new Date();
   console.log(currentDate);
@@ -42,6 +56,11 @@ const getCurrentDay = () => {
   ];
   return dayNames[day];
 };
+/**
+ * checks for valid track
+ * @param {string} track 
+ * @returns {boolean} 
+ */
 const validTrack = (track) => {
   switch (track.toLowerCase()) {
     case "mobile":
@@ -52,6 +71,28 @@ const validTrack = (track) => {
       return true;
     default:
       return false;
+  }
+};
+
+/**
+ * check for allowed time zones
+ * @returns {boolean}
+ */
+const allowedTimeZones = () => {
+  const currentUTC = new Date();
+
+  const currentUTCTime = currentUTC.getTime();
+  const allowedTimeRange = 2 * 60 * 1000;
+  const minAllowedTime = new Date(currentUTCTime - allowedTimeRange);
+
+  const maxAllowedTime = new Date(currentUTCTime + allowedTimeRange);
+  if (
+    currentUTCTime >= minAllowedTime.getTime() &&
+    currentUTCTime <= maxAllowedTime.getTime()
+  ) {
+    return true;
+  } else {
+    return false;
   }
 };
 
