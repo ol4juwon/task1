@@ -31,7 +31,7 @@ app.get("/api", (req, res, next) => {
   return res.status(200).json({
     slack_name: slack_name,
     current_day: currentDay,
-    utc_time: new Date(),
+    utc_time: formatUTC(new Date()),
     track: track,
     github_file_url: "https://github.com/ol4juwon/task1/blob/main/server.js",
     github_repo_url: "https://github.com/ol4juwon/task1",
@@ -96,6 +96,19 @@ const allowedTimeZones = () => {
     return false;
   }
 };
+const formatUTC = (time) => {
+ 
+const year = time.getUTCFullYear();
+const month = String(time.getUTCMonth() + 1).padStart(2, '0');
+const day = String(time.getUTCDate()).padStart(2, '0');
+const hours = String(time.getUTCHours()).padStart(2, '0');
+const minutes = String(time.getUTCMinutes()).padStart(2, '0');
+const seconds = String(time.getUTCSeconds()).padStart(2, '0');
+
+const formattedDate = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}Z`;
+
+return formattedDate;
+}
 
 server.listen(port);
 server.setTimeout(500000);
