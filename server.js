@@ -8,7 +8,7 @@ const port = process.env.PORT || 4000;
 /**
  * me endpoint
  */
-app.get("/api/v1/me", (req, res, next) => {
+app.get("/api", (req, res, next) => {
   const { slack_name, track } = req.query;
   if (!slack_name)
     return res
