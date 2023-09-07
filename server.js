@@ -10,10 +10,11 @@ const port = process.env.PORT || 4000;
  */
 app.get("/api/v1/me", (req, res, next) => {
   const { slack_name, track } = req.query;
-  if (!slack_name && !track)
+  if (!slack_name)
     return res
       .status(400)
-      .json({ error: "Please provide your slack name and track" });
+      .json({ error: "Please provide your slack name" });
+
   if (!validTrack(track))
     return res
       .status(422)
