@@ -23,7 +23,7 @@ app.get("/api/v1/me", (req, res, next) => {
     utc_time: new Date(),
     track: track,
     github_file_url: "https://github.com/ol4juwon/task1/blob/main/server.js",
-    github_repo_url: "https://github.com/username/task1",
+    github_repo_url: "https://github.com/ol4juwon/task1",
     status_code: "200",
   });
 });
